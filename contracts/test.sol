@@ -11,15 +11,22 @@ interface IERC20Like {
 
 interface Hevm {
 
-    function warp(uint256) external;
-
-    function store(address,bytes32,bytes32) external;
+    // Sets block timestamp to `x`
+    function warp(uint256 x) external view;
+    // Sets slot `loc` of contract `c` to value `val`
+    function store(address c, bytes32 loc, bytes32 val) external view;
+    // Reads the slot `loc` of contract `c`
+    function load(address c, bytes32 loc) external view returns (bytes32 val);
+    // Generates address derived from private key `sk`
+    function addr(uint256 sk) external view returns (address _addr);
+    // Signs `digest` with private key `sk` (WARNING: this is insecure as it leaks the private key)
+    function sign(uint256 sk, bytes32 digest) external view returns (uint8 v, bytes32 r, bytes32 s);
 
 }
 
 contract MapleTest is DSTest {
 
-    Hevm hevm;
+    Hevm hevm = Hevm(address(bytes20(uint160(uint256(keccak256("hevm cheat code")))))); 
 
     uint256 constant USD = 10 ** 6;  // USDC precision decimals
     uint256 constant BTC = 10 ** 8;  // WBTC precision decimals
@@ -32,11 +39,6 @@ contract MapleTest is DSTest {
     event Debug(string, address);
     event Debug(string, bool);
 
-    constructor() public {
-
-        hevm = Hevm(address(bytes20(uint160(uint256(keccak256("hevm cheat code")))))); 
-
-    }
 
     // Manipulate mainnet ERC20 balance
     function mint(address addr, uint256 slot, address account, uint256 amt) public {
