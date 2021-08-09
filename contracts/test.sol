@@ -26,7 +26,7 @@ interface Hevm {
 
 contract MapleTest is DSTest {
 
-    Hevm hevm;
+    Hevm hevm = Hevm(address(bytes20(uint160(uint256(keccak256("hevm cheat code")))))); 
 
     uint256 constant USD = 10 ** 6;  // USDC precision decimals
     uint256 constant BTC = 10 ** 8;  // WBTC precision decimals
@@ -39,11 +39,6 @@ contract MapleTest is DSTest {
     event Debug(string, address);
     event Debug(string, bool);
 
-    constructor() public {
-
-        hevm = Hevm(address(bytes20(uint160(uint256(keccak256("hevm cheat code")))))); 
-
-    }
 
     // Manipulate mainnet ERC20 balance
     function mint(address addr, uint256 slot, address account, uint256 amt) public {
