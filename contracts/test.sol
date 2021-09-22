@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-pragma solidity 0.6.11;
+pragma solidity 0.8.7;
 
 import { DSTest } from "../modules/ds-test/src/test.sol";
 
@@ -29,8 +29,6 @@ interface Hevm {
 }
 
 contract TestUtils is DSTest {
-
-    Hevm hevm = Hevm(address(bytes20(uint160(uint256(keccak256("hevm cheat code")))))); 
 
     uint256 private constant RAY = 10 ** 27;
 
@@ -101,7 +99,7 @@ contract StateManipulations {
     Hevm hevm = Hevm(address(bytes20(uint160(uint256(keccak256("hevm cheat code")))))); 
 
     // Manipulate mainnet ERC20 balance
-    function erc20_mint(address token, uint256 slot, address account, uint256 amount) internal {
+    function erc20_mint(address token, uint256 slot, address account, uint256 amount) internal view {
         uint256 balance = IERC20Like(token).balanceOf(account);
 
         hevm.store(
