@@ -43,7 +43,7 @@ contract TestUtils is DSTest {
     // Verify equality within accuracy decimals
     function assertWithinPrecision(uint256 x, uint256 y, uint256 accuracy) internal {
         uint256 diff = getDiff(x, y);
-    
+
         if (diff == 0) return;
 
         uint256 denominator = x == 0 ? y : x;
@@ -61,7 +61,7 @@ contract TestUtils is DSTest {
     // Verify equality within accuracy percentage (basis points)
     function assertWithinPercentage(uint256 x, uint256 y, uint256 percentage) internal {
         uint256 diff = getDiff(x, y);
-    
+
         if (diff == 0) return;
 
         uint256 denominator = x == 0 ? y : x;
@@ -88,15 +88,15 @@ contract TestUtils is DSTest {
         fail();
     }
 
-    function constrictToRange(uint256 value, uint256 min, uint256 max) internal pure returns (uint256) {
-        return (value % (max - min)) + min;
+    function constrictToRange(uint256 input, uint256 min, uint256 max) internal pure returns (uint256 output) {
+        return min == max ? max : input % (max - min) + min;
     }
 
 }
 
 contract StateManipulations {
 
-    Hevm hevm = Hevm(address(bytes20(uint160(uint256(keccak256("hevm cheat code")))))); 
+    Hevm hevm = Hevm(address(bytes20(uint160(uint256(keccak256("hevm cheat code"))))));
 
     // Manipulate mainnet ERC20 balance
     function erc20_mint(address token, uint256 slot, address account, uint256 amount) internal view {
