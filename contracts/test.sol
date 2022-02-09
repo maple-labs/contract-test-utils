@@ -112,4 +112,3 @@ contract StateManipulations {
     }
 
 }
-
