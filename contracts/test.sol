@@ -3,34 +3,13 @@ pragma solidity 0.8.7;
 
 import { DSTest } from "../modules/ds-test/src/test.sol";
 
-interface IERC20Like {
-
-    function balanceOf(address account) external view returns(uint256);
-
-}
-
-interface Hevm {
-
-    // Sets block timestamp to `x`
-    function warp(uint256 x) external view;
-
-    // Sets slot `loc` of contract `c` to value `val`
-    function store(address c, bytes32 loc, bytes32 val) external view;
-
-    // Reads the slot `loc` of contract `c`
-    function load(address c, bytes32 loc) external view returns (bytes32 val);
-
-    // Generates address derived from private key `sk`
-    function addr(uint256 sk) external view returns (address _addr);
-
-    // Signs `digest` with private key `sk` (WARNING: this is insecure as it leaks the private key)
-    function sign(uint256 sk, bytes32 digest) external view returns (uint8 v, bytes32 r, bytes32 s);
-
-}
+import { IERC20Like, Vm } from "./interfaces.sol";
 
 contract TestUtils is DSTest {
 
     uint256 private constant RAY = 10 ** 27;
+
+    Vm vm = Vm(0x7109709ECfa91a80626fF3989D68f67F5b1DD12D);
 
     function getDiff(uint256 x, uint256 y) internal pure returns (uint256 diff) {
         diff = x > y ? x - y : y - x;
@@ -92,17 +71,11 @@ contract TestUtils is DSTest {
         return min == max ? max : input % (max - min) + min;
     }
 
-}
-
-contract StateManipulations {
-
-    Hevm hevm = Hevm(address(bytes20(uint160(uint256(keccak256("hevm cheat code"))))));
-
     // Manipulate mainnet ERC20 balance
-    function erc20_mint(address token, uint256 slot, address account, uint256 amount) internal view {
+    function erc20_mint(address token, uint256 slot, address account, uint256 amount) internal {
         uint256 balance = IERC20Like(token).balanceOf(account);
 
-        hevm.store(
+        vm.store(
             token,
             keccak256(abi.encode(account, slot)), // Mint tokens
             bytes32(balance + amount)
