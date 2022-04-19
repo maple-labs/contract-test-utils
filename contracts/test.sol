@@ -15,6 +15,10 @@ contract TestUtils is DSTest {
         diff = x > y ? x - y : y - x;
     }
 
+    function getDiff(int256 x, int256 y) internal pure returns (int256 diff) {
+        diff = x > y ? x - y : y - x;
+    }
+
     function assertIgnoringDecimals(uint256 x, uint256 y, uint256 decimalsToIgnore) internal {
         assertEq(getDiff(x, y) / (10 ** decimalsToIgnore), 0);
     }
@@ -63,6 +67,18 @@ contract TestUtils is DSTest {
 
         emit log_named_uint("  Expected", x);
         emit log_named_uint("    Actual", y);
+
+        fail();
+    }
+
+    // Verify equality within difference, signed int
+    function assertWithinDiff(int256 x, int256 y, int256 expectedDiff) internal {
+        if (getDiff(x, y) <= expectedDiff) return;
+
+        emit log_named_int("Error: approx a == b not satisfied, accuracy digits", expectedDiff);
+
+        emit log_named_int("  Expected", x);
+        emit log_named_int("    Actual", y);
 
         fail();
     }
