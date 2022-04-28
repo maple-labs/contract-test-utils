@@ -22,7 +22,6 @@ contract CSVWriterTests is TestUtils, CSVWriter {
         initCSV(filePath, header);
 
         string[] memory row = new string[](getCSVRowLength(filePath));
-
         row[0] = "0";
         row[1] = "Erick";
         row[2] = "Smart Contracts";
@@ -63,13 +62,14 @@ contract CSVWriterTests is TestUtils, CSVWriter {
     function test_csv_large() external {
         string memory filePath = "output/large.csv";
 
-        uint256 rowLength = 50;
+        uint256 rowLength    = 50;
         uint256 numberOfRows = 100;
 
         string[] memory header = new string[](rowLength);
         for (uint256 index = 0; index < header.length; index++) {
             header[index] = string(abi.encodePacked("header_", convertUintToString(index)));
         }
+        
         initCSV(filePath, header);
 
         for (uint256 rowIndex = 0; rowIndex < numberOfRows; rowIndex++) {
@@ -91,6 +91,7 @@ contract CSVWriterTests is TestUtils, CSVWriter {
         string memory filePath = "output/teammates.csv";
 
         uint256 rowLength = 5;
+
         string[] memory header = new string[](rowLength);
         header[0] = "id";
         header[1] = "name";
@@ -101,7 +102,6 @@ contract CSVWriterTests is TestUtils, CSVWriter {
         initCSV(filePath, header);
 
         string[] memory row = new string[](rowLength + 1);
-
         row[0] = "0";
         row[1] = "Erick";
         row[2] = "Smart Contracts";
@@ -113,7 +113,6 @@ contract CSVWriterTests is TestUtils, CSVWriter {
         addRow(filePath, row);
 
         row = new string[](rowLength);
-
         row[0] = "0";
         row[1] = "Erick";
         row[2] = "Smart Contracts";
@@ -127,6 +126,7 @@ contract CSVWriterTests is TestUtils, CSVWriter {
         string memory filePath = "output/teammates.csv";
 
         uint256 rowLength = 5;
+
         string[] memory header = new string[](rowLength);
         header[0] = "id";
         header[1] = "name";

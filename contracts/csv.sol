@@ -4,8 +4,8 @@ pragma solidity 0.8.7;
 import { Vm } from "./interfaces.sol";
 
 abstract contract CSVWriter {
-    Vm constant private vm = Vm(0x7109709ECfa91a80626fF3989D68f67F5b1DD12D);
-    string private constant writeToFileScriptPath = "scripts/write-to-file.sh";
+    Vm     constant private vm                    = Vm(0x7109709ECfa91a80626fF3989D68f67F5b1DD12D);
+    string constant private writeToFileScriptPath = "scripts/write-to-file.sh";
 
     mapping (string => string[][]) private csvs;
 
@@ -33,7 +33,7 @@ abstract contract CSVWriter {
 
     function modifyCell(string memory filePath_, uint256 row_, uint256 column_, string memory content_) internal {
         string[][] storage csv = csvs[filePath_];
-        csv[row_][column_] = content_;
+        csv[row_][column_]     = content_;
     }
 
     function clearCSV(string memory filePath_) internal {
@@ -70,9 +70,9 @@ abstract contract CSVWriter {
         inputs[3] = "-b";
         inputs[4] = filePath_B_;
 
-        bytes memory output = vm.ffi(inputs);
+        bytes memory output   = vm.ffi(inputs);
         bytes memory matching = hex"1124";
-        result_ = compareBytes(output, matching);
+        result_               = compareBytes(output, matching);
     }
 
     /**********************/
@@ -81,12 +81,12 @@ abstract contract CSVWriter {
 
     function doesCSVExist(string memory filePath_) internal view returns (bool exists_) {
         string[][] storage csv = csvs[filePath_];
-        exists_ = csv.length > 0; // Is header row there, aka, has initCSV been called.
+        exists_                = csv.length > 0; // Is header row there, aka, has initCSV been called.
     }
 
     function getCSVRowLength(string memory filePath_) internal view returns (uint256 length_) {
         string[][] storage csv = csvs[filePath_];
-        length_ = csv[0].length;
+        length_                = csv[0].length;
     }
 
     /************************/
