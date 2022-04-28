@@ -2,7 +2,6 @@
 pragma solidity 0.8.7;
 
 import { Vm } from "./interfaces.sol";
-import {console} from "./log.sol";
 
 abstract contract CSVWriter {
     Vm constant internal vm2 = Vm(0x7109709ECfa91a80626fF3989D68f67F5b1DD12D);
@@ -103,7 +102,6 @@ abstract contract CSVWriter {
 
         // Build line.
         inputs[4] = generateCSVLineFromArray(csv[index_]);
-        console.log(inputs[4]);
 
         vm2.ffi(inputs);
     }
@@ -118,7 +116,7 @@ abstract contract CSVWriter {
         }
     }
 
-    function compareBytes(bytes memory a, bytes memory b) internal returns (bool result_) {
+    function compareBytes(bytes memory a, bytes memory b) internal pure returns (bool result_) {
         if (a.length != b.length) return false;
         for (uint256 index = 0; index < a.length; index++) {
             if(a[index] != b[index]) return false;

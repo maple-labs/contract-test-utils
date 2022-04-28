@@ -3,7 +3,6 @@ pragma solidity ^0.8.7;
 
 import { TestUtils } from "../contracts/test.sol";
 import { CSVWriter } from "../contracts/csv.sol";
-import { console } from "../contracts/log.sol";
 
 contract CSVWriterTests is TestUtils, CSVWriter {
     function setUp() public {} 
@@ -11,26 +10,20 @@ contract CSVWriterTests is TestUtils, CSVWriter {
     function test_csv1() external {
         string memory filePath = "output/teammates.csv";
 
-        string[] memory row = new string[](5);
+        string[] memory row = new string[](6);
         row[0] = "id";
         row[1] = "name";
         row[2] = "position";
         row[3] = "location";
         row[4] = "animal";
 
-        console.log("INIT");
-
         initCSV(filePath, row);
-
-        console.log("AFTERINIT");
 
         row[0] = "0";
         row[1] = "Erick";
         row[2] = "Smart Contracts";
         row[3] = "Detroit";
         row[4] = "iguana";
-
-        console.log("ADD ROW");
 
         addRow(filePath, row);
 
