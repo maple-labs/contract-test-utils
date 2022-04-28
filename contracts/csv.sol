@@ -4,8 +4,12 @@ pragma solidity 0.8.7;
 import { Vm } from "./interfaces.sol";
 
 abstract contract CSVWriter {
-    Vm     constant private vm                    = Vm(0x7109709ECfa91a80626fF3989D68f67F5b1DD12D);
-    string constant private writeToFileScriptPath = "scripts/write-to-file.sh";
+    Vm     constant private vm                     = Vm(0x7109709ECfa91a80626fF3989D68f67F5b1DD12D);
+    string constant private ffiScriptsRootPath     = "scripts/ffi";
+    string constant private writeToFileScriptPath  = string(abi.encodePacked(ffiScriptsRootPath, "/", "write-to-file.sh"));
+    string constant private deleteFileScriptPath   = string(abi.encodePacked(ffiScriptsRootPath, "/", "rm-file.sh"));
+    string constant private compareFilesScriptPath = string(abi.encodePacked(ffiScriptsRootPath, "/", "cmp-files.sh"));
+
 
     mapping (string => string[][]) private csvs;
 
@@ -55,7 +59,7 @@ abstract contract CSVWriter {
 
     function deleteFile(string memory filePath_) internal {
         string[] memory inputs = new string[](3);
-        inputs[0] = "scripts/rm-file.sh";
+        inputs[0] = deleteFileScriptPath;
         inputs[1] = "-f";
         inputs[2] = filePath_;
 
@@ -64,7 +68,7 @@ abstract contract CSVWriter {
 
     function compareFiles(string memory filePath_A_, string memory filePath_B_) internal returns (bool result_) {
         string[] memory inputs = new string[](5);
-        inputs[0] = "scripts/cmp-files.sh";
+        inputs[0] = compareFilesScriptPath;
         inputs[1] = "-a";
         inputs[2] = filePath_A_;
         inputs[3] = "-b";
@@ -107,7 +111,7 @@ abstract contract CSVWriter {
         string[][] storage csv = csvs[filePath_];
 
         string[] memory inputs = new string[](5);
-        inputs[0] = "scripts/write-to-file.sh";
+        inputs[0] = writeToFileScriptPath;
         inputs[1] = "-f";
         inputs[2] = filePath_;
         inputs[3] = "-i";
