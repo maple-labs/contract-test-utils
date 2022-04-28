@@ -4,7 +4,7 @@ pragma solidity 0.8.7;
 import { Vm } from "./interfaces.sol";
 
 abstract contract CSVWriter {
-    Vm constant internal vm2 = Vm(0x7109709ECfa91a80626fF3989D68f67F5b1DD12D);
+    Vm constant private vm = Vm(0x7109709ECfa91a80626fF3989D68f67F5b1DD12D);
     string private constant writeToFileScriptPath = "scripts/write-to-file.sh";
 
     mapping (string => string[][]) private csvs;
@@ -59,7 +59,7 @@ abstract contract CSVWriter {
         inputs[1] = "-f";
         inputs[2] = filePath_;
 
-        vm2.ffi(inputs);
+        vm.ffi(inputs);
     }
 
     function compareFiles(string memory filePath_A_, string memory filePath_B_) internal returns (bool result_) {
@@ -70,7 +70,7 @@ abstract contract CSVWriter {
         inputs[3] = "-b";
         inputs[4] = filePath_B_;
 
-        bytes memory output = vm2.ffi(inputs);
+        bytes memory output = vm.ffi(inputs);
         bytes memory matching = hex"1124";
         result_ = compareBytes(output, matching);
     }
@@ -113,7 +113,7 @@ abstract contract CSVWriter {
         inputs[3] = "-i";
         inputs[4] = generateCSVLineFromArray(csv[index_]);
 
-        vm2.ffi(inputs);
+        vm.ffi(inputs);
     }
 
     function generateCSVLineFromArray(string[] memory array_) private pure returns (string memory line_) {

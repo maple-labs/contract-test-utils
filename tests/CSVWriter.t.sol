@@ -109,7 +109,7 @@ contract CSVWriterTests is TestUtils, CSVWriter {
         row[4] = "iguana";
         row[5] = "ROW IS TOO LONG";
 
-        vm2.expectRevert("Row length mismatch");
+        vm.expectRevert("Row length mismatch");
         addRow(filePath, row);
 
         row = new string[](rowLength);
@@ -134,7 +134,7 @@ contract CSVWriterTests is TestUtils, CSVWriter {
         header[3] = "location";
         header[4] = "animal";
 
-        vm2.expectRevert("Missing header values");
+        vm.expectRevert("Missing header values");
         initCSV(filePath, header);
 
         header[2] = "position";
