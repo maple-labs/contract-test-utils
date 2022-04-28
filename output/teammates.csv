@@ -1,5 +1,5 @@
-id,name,position,location,animal,animal
-0,Erick,Smart Contracts,Detroit,iguana,animal
-1,Lucas,Smart Contracts,Toronto,kangaroo,animal
-2,Bidin,Smart Contracts,Panama,giraffe,animal
-3,JG,Smart Contracts,Rio,elephant,animal
+id,name,position,location,animal
+0,Erick,Smart Contracts,Detroit,iguana
+1,Lucas,Smart Contracts,Toronto,kangaroo
+2,Bidin,Smart Contracts,Panama,giraffe
+3,JG,Smart Contracts,Rio,elephant

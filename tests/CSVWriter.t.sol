@@ -20,7 +20,7 @@ contract CSVWriterTests is TestUtils, CSVWriter {
 
         console.log("INIT");
 
-        init(filePath, row);
+        initCSV(filePath, row);
 
         console.log("AFTERINIT");
 
@@ -58,8 +58,8 @@ contract CSVWriterTests is TestUtils, CSVWriter {
 
         addRow(filePath, row);
 
-        writeCSV(filePath);
+        writeFile(filePath);
 
-        assertTrue(compareCSV(filePath, "tests/expected/csv1.csv"), "Files don't match");
+        assertTrue(compareFiles(filePath, "tests/expected/csv1.csv"), "Files don't match");
     }
 }

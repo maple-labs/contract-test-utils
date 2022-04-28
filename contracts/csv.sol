@@ -8,28 +8,26 @@ abstract contract CSVWriter {
     Vm constant internal vm2 = Vm(0x7109709ECfa91a80626fF3989D68f67F5b1DD12D);
     string private constant writeToFileScriptPath = "scripts/write-to-file.sh";
 
-    mapping (string => string[][]) csvs;
+    mapping (string => string[][]) private csvs;
 
     /*************************/
     /*** Storage Functions ***/
     /*************************/
 
-    function init(string memory filePath_, string[] memory header_) internal {
+    /**
+        @dev header length decides the row length for csv
+     */
+    function initCSV(string memory filePath_, string[] memory header_) internal {
         string[][] storage csv = csvs[filePath_] = new string[][](0);
         csv.push(header_);
     }
 
-    function addCell(string memory filePath_, uint256 row_, string memory content_) internal {
-        string[][] storage csv = csvs[filePath_];
-        csv[row_].push(content_);
-    }
-
     function addRow(string memory filePath_, string[] memory row_) internal {
+        require(doesCSVExist(filePath_), "CSV uninitialized.");
+        require(getCSVRowLength(filePath_) == row_.length, "Row length mismatch");
+
         string[][] storage csv = csvs[filePath_];
-        console.log("csv length", csv.length);
         csv.push(row_);
-        console.log("csv length", csv.length);
-        console.log("csv[0]", csv[csv.length-1][0]);
     }
 
     function modifyCell(string memory filePath_, uint256 row_, uint256 column_, string memory content_) internal {
@@ -45,8 +43,8 @@ abstract contract CSVWriter {
     /*** File Functions ***/
     /**********************/
 
-    function writeCSV(string memory filePath_) internal {
-        deleteCSV(filePath_);
+    function writeFile(string memory filePath_) internal {
+        deleteFile(filePath_);
 
         string[][] storage csv = csvs[filePath_];
         for (uint256 index = 0; index < csv.length; index++) {
@@ -54,7 +52,7 @@ abstract contract CSVWriter {
         }
     }
 
-    function deleteCSV(string memory filePath_) internal {
+    function deleteFile(string memory filePath_) internal {
         string[] memory inputs = new string[](3);
         inputs[0] = "scripts/rm-file.sh";
         inputs[1] = "-f";
@@ -63,7 +61,7 @@ abstract contract CSVWriter {
         vm2.ffi(inputs);
     }
 
-    function compareCSV(string memory filePath_A_, string memory filePath_B_) internal returns (bool result_) {
+    function compareFiles(string memory filePath_A_, string memory filePath_B_) internal returns (bool result_) {
         string[] memory inputs = new string[](5);
         inputs[0] = "scripts/cmp-files.sh";
         inputs[1] = "-a";
@@ -71,12 +69,23 @@ abstract contract CSVWriter {
         inputs[3] = "-b";
         inputs[4] = filePath_B_;
 
-        console.log("filePath_A_", filePath_A_);
-        console.log("filePath_B_", filePath_B_);
-
         bytes memory output = vm2.ffi(inputs);
         bytes memory matching = hex"1124";
         result_ = compareBytes(output, matching);
+    }
+
+    /**********************/
+    /*** View Functions ***/
+    /**********************/
+
+    function doesCSVExist(string memory filePath_) internal view returns (bool exists_) {
+        string[][] storage csv = csvs[filePath_];
+        exists_ = csv.length > 0; // Is header row there, aka, has initCSV been called.
+    }
+
+    function getCSVRowLength(string memory filePath_) internal view returns (uint256 length_) {
+        string[][] storage csv = csvs[filePath_];
+        length_ = csv[0].length;
     }
 
     /************************/
