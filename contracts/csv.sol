@@ -7,17 +7,22 @@ abstract contract CSVWriter {
     Vm constant internal vm = Vm(0x7109709ECfa91a80626fF3989D68f67F5b1DD12D);
     string private constant writeToFileScriptPath = "scripts/write-to-file.sh";
 
-    string[][] internal csv;
+    mapping (string => string[][]) csvs;
 
-    function initCSV(string[] memory header_) internal {
-        csv = new string[][](0);
+    function initCSV(string memory filePath_, string[] memory header_) internal {
+        string[][] storage csv = csvs[filePath_] = new string[][](0);
         csv[0] = header_;
     }
 
     function writeCSV(string memory filePath_) internal {
+        string[][] storage csv = csvs[filePath_];
         for (uint256 index = 0; index < csv.length; index++) {
             writeLine(filePath_, index);
         }
+    }
+
+    function clearCSV(string memory filePath_) internal {
+        delete csvs[filePath_];
     }
 
     function deleteFile(string memory filePath_) internal {
@@ -30,6 +35,8 @@ abstract contract CSVWriter {
     }
 
     function writeLine(string memory filePath_, uint256 index_) private {
+        string[][] storage csv = csvs[filePath_];
+
         string[] memory inputs = new string[](5);
         inputs[0] = "scripts/write-to-file.sh";
         inputs[1] = "-f";
