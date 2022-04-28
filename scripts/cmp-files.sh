@@ -9,11 +9,9 @@ do
     esac
 done
 
-cmp $a $b
-result=$(cmp $a $b)
-
-SUB=differ
-
-if [[ "$result" == *"$SUB"* ]]; then
-  exit(1)
+if cmp -s $a $b; 
+then
+  echo -n "0x1124" # $, same
+else 
+  echo -n "0x1121" # !, different
 fi

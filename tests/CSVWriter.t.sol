@@ -3,6 +3,7 @@ pragma solidity ^0.8.7;
 
 import { TestUtils } from "../contracts/test.sol";
 import { CSVWriter } from "../contracts/csv.sol";
+import { console } from "../contracts/log.sol";
 
 contract CSVWriterTests is TestUtils, CSVWriter {
     function setUp() public {} 
@@ -10,51 +11,55 @@ contract CSVWriterTests is TestUtils, CSVWriter {
     function test_csv1() external {
         string memory filePath = "output/teammates.csv";
 
-        string[] memory header = new string[](5);
-        header[0] = "id";
-        header[1] = "name";
-        header[2] = "position";
-        header[3] = "location";
-        header[4] = "animal";
+        string[] memory row = new string[](5);
+        row[0] = "id";
+        row[1] = "name";
+        row[2] = "position";
+        row[3] = "location";
+        row[4] = "animal";
 
-        init(filePath, header);
+        console.log("INIT");
 
-        string[] memory row0 = new string[](5);
-        header[0] = "0";
-        header[1] = "Erick";
-        header[2] = "Smart Contracts";
-        header[3] = "Detroit";
-        header[4] = "iguana";
+        init(filePath, row);
 
-        addRow(filePath, row0);
+        console.log("AFTERINIT");
 
-        string[] memory row1 = new string[](5);
-        header[0] = "1";
-        header[1] = "Lucas";
-        header[2] = "Smart Contracts";
-        header[3] = "Toronto";
-        header[4] = "kangaroo";
+        row[0] = "0";
+        row[1] = "Erick";
+        row[2] = "Smart Contracts";
+        row[3] = "Detroit";
+        row[4] = "iguana";
 
-        addRow(filePath, row1);
+        console.log("ADD ROW");
 
-        string[] memory row2 = new string[](5);
-        header[0] = "2";
-        header[1] = "Bidin";
-        header[2] = "Smart Contracts";
-        header[3] = "Panama";
-        header[4] = "giraffe";
+        addRow(filePath, row);
 
-        addRow(filePath, row2);
+        row[0] = "1";
+        row[1] = "Lucas";
+        row[2] = "Smart Contracts";
+        row[3] = "Toronto";
+        row[4] = "kangaroo";
 
-        string[] memory row3 = new string[](5);
-        header[0] = "3";
-        header[1] = "JG";
-        header[2] = "Smart Contracts";
-        header[3] = "Rio";
-        header[4] = "elephant";
+        addRow(filePath, row);
 
-        addRow(filePath, row3);
+        row[0] = "2";
+        row[1] = "Bidin";
+        row[2] = "Smart Contracts";
+        row[3] = "Panama";
+        row[4] = "giraffe";
 
-        compareCSV(filePath, "tests/expected/csv1.csv");
+        addRow(filePath, row);
+
+        row[0] = "3";
+        row[1] = "JG";
+        row[2] = "Smart Contracts";
+        row[3] = "Rio";
+        row[4] = "elephant";
+
+        addRow(filePath, row);
+
+        writeCSV(filePath);
+
+        assertTrue(compareCSV(filePath, "tests/expected/csv1.csv"), "Files don't match");
     }
 }
