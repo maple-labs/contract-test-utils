@@ -10,14 +10,16 @@ contract CSVWriterTests is TestUtils, CSVWriter {
     function test_csv1() external {
         string memory filePath = "output/teammates.csv";
 
-        string[] memory row = new string[](6);
-        row[0] = "id";
-        row[1] = "name";
-        row[2] = "position";
-        row[3] = "location";
-        row[4] = "animal";
+        string[] memory header = new string[](5);
+        header[0] = "id";
+        header[1] = "name";
+        header[2] = "position";
+        header[3] = "location";
+        header[4] = "animal";
 
-        initCSV(filePath, row);
+        initCSV(filePath, header);
+
+        string[] memory row = new string[](5);
 
         row[0] = "0";
         row[1] = "Erick";
