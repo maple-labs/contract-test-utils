@@ -18,6 +18,7 @@ abstract contract CSVWriter {
      */
     function initCSV(string memory filePath_, string[] memory header_) internal {
         string[][] storage csv = csvs[filePath_] = new string[][](0);
+        require(validateAllRowCellsHaveValues(header_), "Missing values");
         csv.push(header_);
     }
 
@@ -26,6 +27,7 @@ abstract contract CSVWriter {
         require(getCSVRowLength(filePath_) == row_.length, "Row length mismatch");
 
         string[][] storage csv = csvs[filePath_];
+        require(validateAllRowCellsHaveValues(row_), "Missing values");
         csv.push(row_);
     }
 
@@ -90,6 +92,16 @@ abstract contract CSVWriter {
     /************************/
     /*** Helper Functions ***/
     /************************/
+
+    function validateAllRowCellsHaveValues(string[] memory row_) private pure returns (bool allHaveValues_) {
+        for (uint256 index = 0; index < row_.length; index++) {
+            string memory cell = row_[index];
+            if (bytes(cell).length == 0) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     function writeLine(string memory filePath_, uint256 index_) private {
         string[][] storage csv = csvs[filePath_];
