@@ -10,7 +10,9 @@ contract CSVWriterTests is TestUtils, CSVWriter {
     function test_csv_simple() external {
         string memory filePath = "output/teammates.csv";
 
-        string[] memory header = new string[](5);
+        uint256 rowLength = 5;
+
+        string[] memory header = new string[](rowLength);
         header[0] = "id";
         header[1] = "name";
         header[2] = "position";
@@ -19,7 +21,7 @@ contract CSVWriterTests is TestUtils, CSVWriter {
 
         initCSV(filePath, header);
 
-        string[] memory row = new string[](5);
+        string[] memory row = new string[](getCSVRowLength(filePath));
 
         row[0] = "0";
         row[1] = "Erick";
@@ -83,5 +85,59 @@ contract CSVWriterTests is TestUtils, CSVWriter {
         writeFile(filePath);
 
         assertTrue(compareFiles(filePath, "tests/expected/large.csv"), "Files don't match");
+    }
+
+    function test_csv_mismatchedRows() external {
+        string memory filePath = "output/teammates.csv";
+
+        uint256 rowLength = 5;
+        string[] memory header = new string[](rowLength);
+        header[0] = "id";
+        header[1] = "name";
+        header[2] = "position";
+        header[3] = "location";
+        header[4] = "animal";
+
+        initCSV(filePath, header);
+
+        string[] memory row = new string[](rowLength + 1);
+
+        row[0] = "0";
+        row[1] = "Erick";
+        row[2] = "Smart Contracts";
+        row[3] = "Detroit";
+        row[4] = "iguana";
+        row[5] = "ROW IS TOO LONG";
+
+        vm2.expectRevert("Row length mismatch");
+        addRow(filePath, row);
+
+        row = new string[](rowLength);
+
+        row[0] = "0";
+        row[1] = "Erick";
+        row[2] = "Smart Contracts";
+        row[3] = "Detroit";
+        row[4] = "iguana";
+
+        addRow(filePath, row);
+    }
+
+    function test_csv_missingHeader() external {
+        string memory filePath = "output/teammates.csv";
+
+        uint256 rowLength = 5;
+        string[] memory header = new string[](rowLength);
+        header[0] = "id";
+        header[1] = "name";
+        header[2] = "";
+        header[3] = "location";
+        header[4] = "animal";
+
+        vm2.expectRevert("Missing header values");
+        initCSV(filePath, header);
+
+        header[2] = "position";
+        initCSV(filePath, header);
     }
 }

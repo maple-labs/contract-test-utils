@@ -18,7 +18,7 @@ abstract contract CSVWriter {
      */
     function initCSV(string memory filePath_, string[] memory header_) internal {
         string[][] storage csv = csvs[filePath_] = new string[][](0);
-        require(validateAllRowCellsHaveValues(header_), "Missing values");
+        require(validateAllRowCellsHaveValues(header_), "Missing header values");
         csv.push(header_);
     }
 
