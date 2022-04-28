@@ -7,7 +7,7 @@ import { CSVWriter } from "../contracts/csv.sol";
 contract CSVWriterTests is TestUtils, CSVWriter {
     function setUp() public {} 
 
-    function test_csv1() external {
+    function test_csv_simple() external {
         string memory filePath = "output/teammates.csv";
 
         string[] memory header = new string[](5);
@@ -56,5 +56,32 @@ contract CSVWriterTests is TestUtils, CSVWriter {
         writeFile(filePath);
 
         assertTrue(compareFiles(filePath, "tests/expected/csv1.csv"), "Files don't match");
+    }
+
+    function test_csv_large() external {
+        string memory filePath = "output/large.csv";
+
+        uint256 rowLength = 50;
+        uint256 numberOfRows = 100;
+
+        string[] memory header = new string[](rowLength);
+        for (uint256 index = 0; index < header.length; index++) {
+            header[index] = string(abi.encodePacked("header_", convertUintToString(index)));
+        }
+        initCSV(filePath, header);
+
+        for (uint256 rowIndex = 0; rowIndex < numberOfRows; rowIndex++) {
+            string[] memory row = new string[](rowLength);
+
+            for (uint256 columnIndex = 0; columnIndex < row.length; columnIndex++) {
+                row[columnIndex] = convertUintToString(uint256(keccak256(abi.encodePacked("cell", convertUintToString(rowIndex), convertUintToString(columnIndex)))));
+            }
+
+            addRow(filePath, row);
+        }
+
+        writeFile(filePath);
+
+        assertTrue(compareFiles(filePath, "tests/expected/large.csv"), "Files don't match");
     }
 }

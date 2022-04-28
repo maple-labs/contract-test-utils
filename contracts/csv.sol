@@ -111,8 +111,6 @@ abstract contract CSVWriter {
         inputs[1] = "-f";
         inputs[2] = filePath_;
         inputs[3] = "-i";
-
-        // Build line.
         inputs[4] = generateCSVLineFromArray(csv[index_]);
 
         vm2.ffi(inputs);

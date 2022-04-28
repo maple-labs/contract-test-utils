@@ -104,6 +104,34 @@ contract TestUtils is DSTest {
         // TODO: Update totalSupply
     }
 
+        // Adapted from https://stackoverflow.com/questions/47129173/how-to-convert-uint-to-string-in-solidity
+    function convertUintToString(uint256 input_) internal pure returns (string memory output_) {
+        if (input_ == 0) return "0";
+
+        uint256 j = input_;
+        uint256 length;
+
+        while (j != 0) {
+            length++;
+            j /= 10;
+        }
+
+        bytes memory output = new bytes(length);
+        uint256 k = length;
+
+        while (input_ != 0) {
+            k = k - 1;
+
+            uint8 temp = (48 + uint8(input_ - input_ / 10 * 10));
+            bytes1 b1  = bytes1(temp);
+
+            output[k] = b1;
+            input_ /= 10;
+        }
+
+        return string(output);
+    }
+
 }
 
 contract InvariantTest {
