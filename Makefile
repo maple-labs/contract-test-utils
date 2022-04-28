@@ -1,5 +1,14 @@
-prod    :; ./build.sh -c ./config/prod.json
-dev     :; ./build.sh -c ./config/dev.json
-ci      :; ./build.sh -c ./config/ci.json
-clean   :; dapp clean
-test    :; ./test.sh
+install:
+	@git submodule update --init --recursive
+
+update:
+	@forge update
+
+build:
+	@scripts/build.sh
+
+test:
+	@scripts/test.sh
+
+clean:
+	@forge clean
