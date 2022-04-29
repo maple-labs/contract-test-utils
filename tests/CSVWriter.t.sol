@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity ^0.8.7;
 
-import { TestUtils } from "../contracts/test.sol";
 import { CSVWriter } from "../contracts/csv.sol";
+import { TestUtils } from "../contracts/test.sol";
 
 contract CSVWriterTests is TestUtils, CSVWriter {
+
     function setUp() public {} 
 
     function test_csv_simple() external {
@@ -140,4 +141,5 @@ contract CSVWriterTests is TestUtils, CSVWriter {
         header[2] = "position";
         initCSV(filePath, header);
     }
+
 }
