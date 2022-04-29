@@ -4,6 +4,7 @@ pragma solidity 0.8.7;
 import { Vm } from "./interfaces.sol";
 
 abstract contract CSVWriter {
+    
     Vm constant private vm = Vm(0x7109709ECfa91a80626fF3989D68f67F5b1DD12D);
 
     string constant private ffiScriptsRootPath     = "scripts/ffi";
