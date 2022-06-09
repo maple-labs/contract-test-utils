@@ -33,8 +33,8 @@ contract TestUtils is DSTest {
 
         emit log_named_uint("Error: approx a == b not satisfied, accuracy digits", accuracy);
 
-        emit log_named_uint("  Expected", x);
-        emit log_named_uint("    Actual", y);
+        emit log_named_uint("  Expected", y);
+        emit log_named_uint("    Actual", x);
 
         fail();
     }
@@ -51,8 +51,8 @@ contract TestUtils is DSTest {
 
         emit log_named_uint("Error: approx a == b not satisfied, accuracy digits", percentage);
 
-        emit log_named_uint("  Expected", x);
-        emit log_named_uint("    Actual", y);
+        emit log_named_uint("  Expected", y);
+        emit log_named_uint("    Actual", x);
 
         fail();
     }
@@ -63,8 +63,8 @@ contract TestUtils is DSTest {
 
         emit log_named_uint("Error: approx a == b not satisfied, accuracy digits", expectedDiff);
 
-        emit log_named_uint("  Expected", x);
-        emit log_named_uint("    Actual", y);
+        emit log_named_uint("  Expected", y);
+        emit log_named_uint("    Actual", x);
 
         fail();
     }
