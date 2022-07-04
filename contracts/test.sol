@@ -5,6 +5,10 @@ import { DSTest } from "./DSTest.sol";
 
 import { IERC20Like, Vm } from "./interfaces.sol";
 
+import { console } from "./log.sol";
+
+contract Address { }
+
 contract TestUtils is DSTest {
 
     uint256 private constant RAY = 10 ** 27;
