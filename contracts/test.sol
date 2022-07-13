@@ -16,6 +16,7 @@ contract TestUtils is DSTest {
     Vm vm = Vm(0x7109709ECfa91a80626fF3989D68f67F5b1DD12D);
 
     bytes constant ARITHMETIC_ERROR = abi.encodeWithSignature("Panic(uint256)", 0x11);
+    bytes constant ZERO_DIVISION    = abi.encodeWithSignature("Panic(uint256)", 0x12);
 
     function getDiff(uint256 x, uint256 y) internal pure returns (uint256 diff) {
         diff = x > y ? x - y : y - x;
