@@ -92,4 +92,13 @@ interface Vm {
     // If the condition is false, discard this run's fuzz inputs and generate new ones
     function assume(bool) external;
 
+    // Read an environment variable as a `string`.
+    function envString(string calldata key) external returns (string memory value);
+
+    // Creates and selects a new fork from the given endpoint and returns the identifier of the fork.
+    function createSelectFork(string calldata urlOrAlias) external returns (uint256);
+
+    // Creates and selects a new fork from the given endpoint and at the specified block.
+    function createSelectFork(string calldata urlOrAlias, uint256 block) external returns (uint256);
+
 }
