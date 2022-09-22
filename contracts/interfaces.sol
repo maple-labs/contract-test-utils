@@ -96,9 +96,9 @@ interface Vm {
     function envString(string calldata key) external returns (string memory value);
 
     // Creates and selects a new fork from the given endpoint and returns the identifier of the fork.
-    function createSelectFork(string calldata urlOrAlias) external returns (uint256);
+    function createSelectFork(string calldata urlOrAlias) external returns (uint256 forkId);
 
     // Creates and selects a new fork from the given endpoint and at the specified block.
-    function createSelectFork(string calldata urlOrAlias, uint256 block) external returns (uint256);
+    function createSelectFork(string calldata urlOrAlias, uint256 block) external returns (uint256 forkId);
 
 }
