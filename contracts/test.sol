@@ -84,6 +84,8 @@ contract TestUtils is DSTest {
 
         if (min == max) return min;  // A range of 0 is effectively a single value.
 
+        if (x >= min && x <= max) return x;  // Use value directly from fuzz if already in range.
+
         if (min == 0 && max == type(uint256).max) return x;  // The entire uint256 space is effectively x.
 
         return (x % ((max - min) + 1)) + min;  // Given the above exit conditions, `(max - min) + 1 <= type(uint256).max`.
