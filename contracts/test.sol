@@ -84,7 +84,9 @@ contract TestUtils is DSTest {
 
         uint256 size = max - min;
 
-        if (size == 0) return min;            // Using max would be equivalent as well.
+        if (size == 0)            return min;  // Using max would be equivalent as well.
+        if (x >= min && x <= max) return x;    // Use dictionary values where possible.
+
         if (max != type(uint256).max) size++; // Make the max inclusive.
 
         // Ensure max is inclusive in cases where x != 0 and max is at uint max.
