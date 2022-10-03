@@ -145,6 +145,7 @@ contract InvariantTest {
 
     address[] private _excludedContracts;
     address[] private _targetContracts;
+    address[] private _targetSenders;
 
     function addTargetContract(address newTargetContract_) internal {
         _targetContracts.push(newTargetContract_);
@@ -153,6 +154,15 @@ contract InvariantTest {
     function targetContracts() public view returns (address[] memory targetContracts_) {
         require(_targetContracts.length != uint256(0), "NO_TARGET_CONTRACTS");
         return _targetContracts;
+    }
+
+    function addTargetSender(address newTargetSender_) internal {
+        _targetSenders.push(newTargetSender_);
+    }
+
+    function targetSenders() public view returns (address[] memory targetSenders_) {
+        require(_targetSenders.length != uint256(0), "NO_TARGET_SENDERS");
+        return _targetSenders;
     }
 
     function excludeContract(address newExcludedContract_) internal {
