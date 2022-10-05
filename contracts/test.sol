@@ -74,7 +74,7 @@ contract TestUtils is DSTest {
         fail();
     }
 
-    // Constrict values to a range, inclusive of min and max values. Source: solmate
+    // Constrict values to a range, inclusive of min and max values.
     function constrictToRange(
         uint256 x,
         uint256 min,
@@ -82,20 +82,13 @@ contract TestUtils is DSTest {
     ) internal pure returns (uint256 result) {
         require(max >= min, "MAX_LESS_THAN_MIN");
 
-        uint256 size = max - min;
+        if (min == max) return min;  // A range of 0 is effectively a single value.
 
-        if (size == 0) return min;            // Using max would be equivalent as well.
-        if (max != type(uint256).max) size++; // Make the max inclusive.
+        if (x >= min && x <= max) return x;  // Use value directly from fuzz if already in range.
 
-        // Ensure max is inclusive in cases where x != 0 and max is at uint max.
-        if (max == type(uint256).max && x != 0) x--; // Accounted for later.
+        if (min == 0 && max == type(uint256).max) return x;  // The entire uint256 space is effectively x.
 
-        if (x < min) x += size * (((min - x) / size) + 1);
-
-        result = min + ((x - min) % size);
-
-        // Account for decrementing x to make max inclusive.
-        if (max == type(uint256).max && x != 0) result++;
+        return (x % ((max - min) + 1)) + min;  // Given the above exit conditions, `(max - min) + 1 <= type(uint256).max`.
     }
 
     // Manipulate mainnet ERC20 balance
@@ -111,7 +104,7 @@ contract TestUtils is DSTest {
         // TODO: Update totalSupply
     }
 
-        // Adapted from https://stackoverflow.com/questions/47129173/how-to-convert-uint-to-string-in-solidity
+    // Adapted from https://stackoverflow.com/questions/47129173/how-to-convert-uint-to-string-in-solidity
     function convertUintToString(uint256 input_) internal pure returns (string memory output_) {
         if (input_ == 0) return "0";
 
@@ -143,25 +136,61 @@ contract TestUtils is DSTest {
 
 contract InvariantTest {
 
+    struct FuzzSelector {
+        address addr;
+        bytes4[] selectors;
+    }
+
     address[] private _excludedContracts;
-    address[] private _targetContracts;
+    address[] private _excludedSenders;
+    address[] private _targetedContracts;
+    address[] private _targetedSenders;
 
-    function addTargetContract(address newTargetContract_) internal {
-        _targetContracts.push(newTargetContract_);
-    }
-
-    function targetContracts() public view returns (address[] memory targetContracts_) {
-        require(_targetContracts.length != uint256(0), "NO_TARGET_CONTRACTS");
-        return _targetContracts;
-    }
+    FuzzSelector[] internal _targetedSelectors;
 
     function excludeContract(address newExcludedContract_) internal {
         _excludedContracts.push(newExcludedContract_);
     }
 
     function excludeContracts() public view returns (address[] memory excludedContracts_) {
-        require(_excludedContracts.length != uint256(0), "NO_TARGET_CONTRACTS");
-        return _excludedContracts;
+        require(_excludedContracts.length != uint256(0), "NO_EXCLUDED_CONTRACTS");
+        excludedContracts_ = _excludedContracts;
+    }
+
+    function excludeSender(address newExcludedSender_) internal {
+        _excludedSenders.push(newExcludedSender_);
+    }
+
+    function excludeSenders() public view returns (address[] memory excludedSenders_) {
+        require(_excludedSenders.length != uint256(0), "NO_EXCLUDED_SENDERS");
+        excludedSenders_ = _excludedSenders;
+    }
+
+    function targetContract(address newTargetedContract_) internal {
+        _targetedContracts.push(newTargetedContract_);
+    }
+
+    function targetContracts() public view returns (address[] memory targetedContracts_) {
+        require(_targetedContracts.length != uint256(0), "NO_TARGETED_CONTRACTS");
+        targetedContracts_ = _targetedContracts;
+    }
+
+    function targetSelector(FuzzSelector memory newTargetedSelector_) internal {
+        _targetedSelectors.push(newTargetedSelector_);
+    }
+
+    function targetSelectors() public view returns (FuzzSelector[] memory targetedSelectors_) {
+        require(targetedSelectors_.length != uint256(0), "NO_TARGETED_SELECTORS");
+        targetedSelectors_ = _targetedSelectors;
+    }
+
+    function targetSender(address newTargetedSender_) internal {
+        _targetedSenders.push(newTargetedSender_);
+    }
+
+    function targetSenders() public view returns (address[] memory targetedSenders_) {
+        require(_targetedSenders.length != uint256(0), "NO_TARGETED_SENDERS");
+        targetedSenders_ = _targetedSenders;
     }
 
 }
