@@ -26,8 +26,12 @@ contract TestUtils is DSTest {
         assertEq(getDiff(x, y) / (10 ** decimalsToIgnore), 0);
     }
 
-    // Verify equality within accuracy decimals
     function assertWithinPrecision(uint256 x, uint256 y, uint256 accuracy) internal {
+        assertWithinPrecision(x, y, accuracy, "");
+    }
+
+    // Verify equality within accuracy decimals
+    function assertWithinPrecision(uint256 x, uint256 y, uint256 accuracy, string memory err) internal {
         uint256 diff = getDiff(x, y);
 
         if (diff == 0) return;
@@ -35,6 +39,8 @@ contract TestUtils is DSTest {
         uint256 denominator = x == 0 ? y : x;
 
         if (((diff * RAY) / denominator) < (RAY / 10 ** accuracy)) return;
+
+        if (bytes(err).length > 0) emit log_named_string("Error", err);
 
         emit log_named_uint("Error: approx a == b not satisfied, accuracy digits", accuracy);
 
@@ -44,8 +50,12 @@ contract TestUtils is DSTest {
         fail();
     }
 
-    // Verify equality within accuracy percentage (basis points)
     function assertWithinPercentage(uint256 x, uint256 y, uint256 percentage) internal {
+        assertWithinPercentage(x, y, percentage, "");
+    }
+
+    // Verify equality within accuracy percentage (basis points)
+    function assertWithinPercentage(uint256 x, uint256 y, uint256 percentage, string memory err) internal {
         uint256 diff = getDiff(x, y);
 
         if (diff == 0) return;
@@ -53,6 +63,8 @@ contract TestUtils is DSTest {
         uint256 denominator = x == 0 ? y : x;
 
         if (((diff * RAY) / denominator) < percentage * RAY / 10_000) return;
+
+        if (bytes(err).length > 0) emit log_named_string("Error", err);
 
         emit log_named_uint("Error: approx a == b not satisfied, accuracy digits", percentage);
 
@@ -62,9 +74,15 @@ contract TestUtils is DSTest {
         fail();
     }
 
+    function assertWithinDiff(uint256 x, uint256 y, uint256 diff) internal {
+        assertWithinDiff(x, y, diff, "");
+    }
+
     // Verify equality within difference
-    function assertWithinDiff(uint256 x, uint256 y, uint256 expectedDiff) internal {
+    function assertWithinDiff(uint256 x, uint256 y, uint256 expectedDiff, string memory err) internal {
         if (getDiff(x, y) <= expectedDiff) return;
+
+        if (bytes(err).length > 0) emit log_named_string("Error", err);
 
         emit log_named_uint("Error: approx a == b not satisfied, accuracy digits", expectedDiff);
 
