@@ -105,4 +105,8 @@ interface Vm {
     // Creates and selects a new fork from the given endpoint and at the specified block.
     function createSelectFork(string calldata urlOrAlias, uint256 block) external returns (uint256 forkId);
 
+    function startBroadcast() external;
+
+    function stopBroadcast() external;
+
 }
