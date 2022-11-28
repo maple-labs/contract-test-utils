@@ -115,6 +115,16 @@ interface Vm {
 
     function toString(bytes32) external returns (string memory);
 
-    function toString(bytes) external returns (string memory);
+    function toString(bytes memory) external returns (string memory);
+
+    function setEnv(string calldata, string calldata) external;
+
+    function broadcast(address) external;
+
+    function broadcast() external;
+
+    function startBroadcast() external;
+
+    function stopBroadcast() external;
 
 }
