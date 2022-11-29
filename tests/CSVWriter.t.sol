@@ -6,7 +6,7 @@ import { TestUtils } from "../contracts/test.sol";
 
 contract CSVWriterTests is TestUtils, CSVWriter {
 
-    function setUp() public {} 
+    function setUp() public {}
 
     function test_csv_simple() external {
         string memory filePath = "output/teammates.csv";
@@ -70,7 +70,7 @@ contract CSVWriterTests is TestUtils, CSVWriter {
         for (uint256 index = 0; index < header.length; index++) {
             header[index] = string(abi.encodePacked("header_", convertUintToString(index)));
         }
-        
+
         initCSV(filePath, header);
 
         for (uint256 rowIndex = 0; rowIndex < numberOfRows; rowIndex++) {
@@ -135,7 +135,7 @@ contract CSVWriterTests is TestUtils, CSVWriter {
         header[3] = "location";
         header[4] = "animal";
 
-        vm.expectRevert("Missing header values");
+        vm.expectRevert("Missing values");
         initCSV(filePath, header);
 
         header[2] = "position";

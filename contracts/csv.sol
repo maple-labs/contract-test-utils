@@ -13,20 +13,73 @@ abstract contract CSVWriter {
     string constant private makeDirScriptPath      = string(abi.encodePacked(ffiScriptsRootPath, "/", "mkdir.sh"));
     string constant private writeToFileScriptPath  = string(abi.encodePacked(ffiScriptsRootPath, "/", "write-to-file.sh"));
 
-
     mapping (string => string[][]) private csvs;
 
     /*************************/
     /*** Storage Functions ***/
     /*************************/
 
-    function addRow(string memory filePath_, string[] memory row_) internal {
+    modifier csvExists(string memory filePath_) {
         require(doesCSVExist(filePath_), "CSV uninitialized.");
-        require(getCSVRowLength(filePath_) == row_.length, "Row length mismatch");
+        _;
+    }
 
-        string[][] storage csv = csvs[filePath_];
+    modifier validRow(string[] memory row_) {
         require(validateAllRowCellsHaveValues(row_), "Missing values");
-        csv.push(row_);
+        _;
+    }
+
+    modifier validRowForCsv(string memory filePath_, uint256 rowLength) {
+        require(getCSVRowLength(filePath_) == rowLength, "Row length mismatch");
+        _;
+    }
+
+    function _addRow(string memory filePath_, string[] memory row_) validRow(row_) internal {
+        csvs[filePath_].push(row_);
+    }
+
+    function addRow(string memory filePath_, string[] memory row_) csvExists(filePath_) validRowForCsv(filePath_, row_.length) internal {
+        _addRow(filePath_, row_);
+    }
+
+    function addRow(string memory filePath_, string memory cell1_) csvExists(filePath_) validRowForCsv(filePath_, 1) internal {
+        string[] memory row_ = new string[](1);
+        row_[0] = cell1_;
+        _addRow(filePath_, row_);
+    }
+
+    function addRow(string memory filePath_, string memory cell1_, string memory cell2_) csvExists(filePath_) validRowForCsv(filePath_, 2) internal {
+        string[] memory row_ = new string[](2);
+        row_[0] = cell1_;
+        row_[1] = cell2_;
+        _addRow(filePath_, row_);
+    }
+
+    function addRow(string memory filePath_, string memory cell1_, string memory cell2_, string memory cell3_) csvExists(filePath_) validRowForCsv(filePath_, 3) internal {
+        string[] memory row_ = new string[](3);
+        row_[0] = cell1_;
+        row_[1] = cell2_;
+        row_[2] = cell3_;
+        _addRow(filePath_, row_);
+    }
+
+    function addRow(string memory filePath_, string memory cell1_, string memory cell2_, string memory cell3_, string memory cell4_) csvExists(filePath_) validRowForCsv(filePath_, 4) internal {
+        string[] memory row_ = new string[](4);
+        row_[0] = cell1_;
+        row_[1] = cell2_;
+        row_[2] = cell3_;
+        row_[3] = cell4_;
+        _addRow(filePath_, row_);
+    }
+
+    function addRow(string memory filePath_, string memory cell1_, string memory cell2_, string memory cell3_, string memory cell4_, string memory cell5_) csvExists(filePath_) validRowForCsv(filePath_, 5) internal {
+        string[] memory row_ = new string[](5);
+        row_[0] = cell1_;
+        row_[1] = cell2_;
+        row_[2] = cell3_;
+        row_[3] = cell4_;
+        row_[4] = cell5_;
+        _addRow(filePath_, row_);
     }
 
     function clearCSV(string memory filePath_) internal {
@@ -36,15 +89,57 @@ abstract contract CSVWriter {
     /**
         @dev header length decides the row length for csv
      */
+    function _initCSV(string memory filePath_, string[] memory header_) internal {
+        clearCSV(filePath_);
+        _addRow(filePath_, header_);
+    }
+
     function initCSV(string memory filePath_, string[] memory header_) internal {
-        string[][] storage csv = csvs[filePath_] = new string[][](0);
-        require(validateAllRowCellsHaveValues(header_), "Missing header values");
-        csv.push(header_);
+        _initCSV(filePath_, header_);
+    }
+
+    function initCSV(string memory filePath_, string memory header1_) internal {
+        string[] memory row_ = new string[](1);
+        row_[0] = header1_;
+        _initCSV(filePath_, row_);
+    }
+
+    function initCSV(string memory filePath_, string memory header1_, string memory header2_) internal {
+        string[] memory row_ = new string[](2);
+        row_[0] = header1_;
+        row_[1] = header2_;
+        _initCSV(filePath_, row_);
+    }
+
+    function initCSV(string memory filePath_, string memory header1_, string memory header2_, string memory header3_) internal {
+        string[] memory row_ = new string[](3);
+        row_[0] = header1_;
+        row_[1] = header2_;
+        row_[2] = header3_;
+        _initCSV(filePath_, row_);
+    }
+
+    function initCSV(string memory filePath_, string memory header1_, string memory header2_, string memory header3_, string memory header4_) internal {
+        string[] memory row_ = new string[](4);
+        row_[0] = header1_;
+        row_[1] = header2_;
+        row_[2] = header3_;
+        row_[3] = header4_;
+        _initCSV(filePath_, row_);
+    }
+
+    function initCSV(string memory filePath_, string memory header1_, string memory header2_, string memory header3_, string memory header4_, string memory header5_) internal {
+        string[] memory row_ = new string[](5);
+        row_[0] = header1_;
+        row_[1] = header2_;
+        row_[2] = header3_;
+        row_[3] = header4_;
+        row_[4] = header5_;
+        _initCSV(filePath_, row_);
     }
 
     function modifyCell(string memory filePath_, uint256 row_, uint256 column_, string memory content_) internal {
-        string[][] storage csv = csvs[filePath_];
-        csv[row_][column_]     = content_;
+        csvs[filePath_][row_][column_]     = content_;
     }
 
     /**********************/
@@ -86,7 +181,8 @@ abstract contract CSVWriter {
         deleteFile(filePath_);
 
         string[][] storage csv = csvs[filePath_];
-        for (uint256 index = 0; index < csv.length; index++) {
+
+        for (uint256 index; index < csv.length; ++index) {
             writeLine(filePath_, index);
         }
     }
@@ -111,29 +207,29 @@ abstract contract CSVWriter {
 
     function compareBytes(bytes memory a, bytes memory b) internal pure returns (bool result_) {
         if (a.length != b.length) return false;
-        for (uint256 index = 0; index < a.length; index++) {
-            if(a[index] != b[index]) return false;
+
+        for (uint256 index; index < a.length; ++index) {
+            if (a[index] != b[index]) return false;
         }
+
         return true;
     }
 
     function generateCSVLineFromArray(string[] memory array_) private pure returns (string memory line_) {
-        for (uint256 index = 0; index < array_.length; index++) {
-            if (index == 0) {
-                line_ = array_[index];
-            } else {
-                line_ = string(abi.encodePacked(line_, ",", array_[index]));
-            }
+        for (uint256 index; index < array_.length; ++index) {
+            line_ = index == 0
+                ? array_[index]
+                : string(abi.encodePacked(line_, ",", array_[index]));
         }
     }
 
     function validateAllRowCellsHaveValues(string[] memory row_) private pure returns (bool allHaveValues_) {
-        for (uint256 index = 0; index < row_.length; index++) {
+        for (uint256 index; index < row_.length; ++index) {
             string memory cell = row_[index];
-            if (bytes(cell).length == 0) {
-                return false;
-            }
+
+            if (bytes(cell).length == 0) return false;
         }
+
         return true;
     }
 
