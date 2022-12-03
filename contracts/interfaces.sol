@@ -127,4 +127,6 @@ interface Vm {
 
     function stopBroadcast() external;
 
+    function startBroadcast(address) external;
+
 }
