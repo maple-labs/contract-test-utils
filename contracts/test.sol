@@ -170,10 +170,6 @@ contract TestUtils is DSTest {
 		_sendLogPayload(abi.encodeWithSignature("log(bool)", p0));
 	}
 
-    function log(int p0) internal view {
-		_sendLogPayload(abi.encodeWithSignature("log(int)", p0));
-	}
-
     function log(string memory p0) internal view {
 		_sendLogPayload(abi.encodeWithSignature("log(string)", p0));
 	}
@@ -188,10 +184,6 @@ contract TestUtils is DSTest {
 
 	function log(string memory p0, bool p1) internal view {
 		_sendLogPayload(abi.encodeWithSignature("log(string,bool)", p0, p1));
-	}
-
-    function log(string memory p0, int p1) internal view {
-		_sendLogPayload(abi.encodeWithSignature("log(string,int)", p0, p1));
 	}
 
     function log(string memory p0, string memory p1) internal view {
