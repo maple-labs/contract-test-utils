@@ -21,14 +21,14 @@ contract TestUtils is DSTest {
     Vm vm = Vm(0x7109709ECfa91a80626fF3989D68f67F5b1DD12D);
 
     function _sendLogPayload(bytes memory payload) private view {
-		address consoleAddress = CONSOLE_ADDRESS;
-		uint256 payloadLength = payload.length;
+        address consoleAddress = CONSOLE_ADDRESS;
+        uint256 payloadLength = payload.length;
 
-		assembly {
-			let payloadStart := add(payload, 32)
-			let r := staticcall(gas(), consoleAddress, payloadStart, payloadLength, 0, 0)
-		}
-	}
+        assembly {
+            let payloadStart := add(payload, 32)
+            let r := staticcall(gas(), consoleAddress, payloadStart, payloadLength, 0, 0)
+        }
+    }
 
     function getDiff(uint256 x, uint256 y) internal pure returns (uint256 diff) {
         diff = x > y ? x - y : y - x;
@@ -163,36 +163,36 @@ contract TestUtils is DSTest {
     }
 
     function log(address p0) internal view {
-		_sendLogPayload(abi.encodeWithSignature("log(address)", p0));
-	}
+        _sendLogPayload(abi.encodeWithSignature("log(address)", p0));
+    }
 
-	function log(bool p0) internal view {
-		_sendLogPayload(abi.encodeWithSignature("log(bool)", p0));
-	}
+    function log(bool p0) internal view {
+        _sendLogPayload(abi.encodeWithSignature("log(bool)", p0));
+    }
 
     function log(string memory p0) internal view {
-		_sendLogPayload(abi.encodeWithSignature("log(string)", p0));
-	}
+        _sendLogPayload(abi.encodeWithSignature("log(string)", p0));
+    }
 
     function log(uint p0) internal view {
-		_sendLogPayload(abi.encodeWithSignature("log(uint)", p0));
-	}
+        _sendLogPayload(abi.encodeWithSignature("log(uint)", p0));
+    }
 
     function log(string memory p0, address p1) internal view {
-		_sendLogPayload(abi.encodeWithSignature("log(string,address)", p0, p1));
-	}
+        _sendLogPayload(abi.encodeWithSignature("log(string,address)", p0, p1));
+    }
 
-	function log(string memory p0, bool p1) internal view {
-		_sendLogPayload(abi.encodeWithSignature("log(string,bool)", p0, p1));
-	}
+    function log(string memory p0, bool p1) internal view {
+        _sendLogPayload(abi.encodeWithSignature("log(string,bool)", p0, p1));
+    }
 
     function log(string memory p0, string memory p1) internal view {
-		_sendLogPayload(abi.encodeWithSignature("log(string,string)", p0, p1));
-	}
+        _sendLogPayload(abi.encodeWithSignature("log(string,string)", p0, p1));
+    }
 
     function log(string memory p0, uint p1) internal view {
-		_sendLogPayload(abi.encodeWithSignature("log(string,uint)", p0, p1));
-	}
+        _sendLogPayload(abi.encodeWithSignature("log(string,uint)", p0, p1));
+    }
 
 }
 
