@@ -170,16 +170,36 @@ contract TestUtils is DSTest {
 		_sendLogPayload(abi.encodeWithSignature("log(bool)", p0));
 	}
 
-    function log(int256 p0) internal view {
-		_sendLogPayload(abi.encodeWithSignature("log(uint)", p0));
+    function log(int p0) internal view {
+		_sendLogPayload(abi.encodeWithSignature("log(int)", p0));
 	}
 
     function log(string memory p0) internal view {
 		_sendLogPayload(abi.encodeWithSignature("log(string)", p0));
 	}
 
-    function log(uint256 p0) internal view {
+    function log(uint p0) internal view {
 		_sendLogPayload(abi.encodeWithSignature("log(uint)", p0));
+	}
+
+    function log(string memory p0, address p1) internal view {
+		_sendLogPayload(abi.encodeWithSignature("log(string,address)", p0, p1));
+	}
+
+	function log(string memory p0, bool p1) internal view {
+		_sendLogPayload(abi.encodeWithSignature("log(string,bool)", p0, p1));
+	}
+
+    function log(string memory p0, int p1) internal view {
+		_sendLogPayload(abi.encodeWithSignature("log(string,int)", p0, p1));
+	}
+
+    function log(string memory p0, string memory p1) internal view {
+		_sendLogPayload(abi.encodeWithSignature("log(string,string)", p0, p1));
+	}
+
+    function log(string memory p0, uint p1) internal view {
+		_sendLogPayload(abi.encodeWithSignature("log(string,uint)", p0, p1));
 	}
 
 }
