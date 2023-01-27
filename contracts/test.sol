@@ -11,12 +11,24 @@ contract Address { }
 
 contract TestUtils is DSTest {
 
-    uint256 private constant RAY = 10 ** 27;
-
-    Vm vm = Vm(0x7109709ECfa91a80626fF3989D68f67F5b1DD12D);
+    address constant CONSOLE_ADDRESS = address(0x000000000000000000636F6e736F6c652e6c6f67);
 
     bytes constant ARITHMETIC_ERROR = abi.encodeWithSignature("Panic(uint256)", 0x11);
     bytes constant ZERO_DIVISION    = abi.encodeWithSignature("Panic(uint256)", 0x12);
+
+    uint256 constant RAY = 10 ** 27;
+
+    Vm vm = Vm(0x7109709ECfa91a80626fF3989D68f67F5b1DD12D);
+
+    function _sendLogPayload(bytes memory payload) private view {
+		address consoleAddress = CONSOLE_ADDRESS;
+		uint256 payloadLength = payload.length;
+
+		assembly {
+			let payloadStart := add(payload, 32)
+			let r := staticcall(gas(), consoleAddress, payloadStart, payloadLength, 0, 0)
+		}
+	}
 
     function getDiff(uint256 x, uint256 y) internal pure returns (uint256 diff) {
         diff = x > y ? x - y : y - x;
@@ -149,6 +161,26 @@ contract TestUtils is DSTest {
 
         return string(output);
     }
+
+    function log(address p0) internal view {
+		_sendLogPayload(abi.encodeWithSignature("log(address)", p0));
+	}
+
+	function log(bool p0) internal view {
+		_sendLogPayload(abi.encodeWithSignature("log(bool)", p0));
+	}
+
+    function log(int256 p0) internal view {
+		_sendLogPayload(abi.encodeWithSignature("log(uint)", p0));
+	}
+
+    function log(string memory p0) internal view {
+		_sendLogPayload(abi.encodeWithSignature("log(string)", p0));
+	}
+
+    function log(uint256 p0) internal view {
+		_sendLogPayload(abi.encodeWithSignature("log(uint)", p0));
+	}
 
 }
 
